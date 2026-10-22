@@ -6,41 +6,42 @@
     <title>ポスト / つぶやき投稿アプリ</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: -apple-system, BlinkMacSystemFont, "Hiragino Sans", "Noto Sans JP", sans-serif; background: #FFFFFF; color: #0F1419; font-feature-settings: "palt"; }
+        body { font-family: -apple-system, BlinkMacSystemFont, "Hiragino Sans", "Noto Sans JP", sans-serif; background: #FAF9F6; color: #1A1A1A; font-feature-settings: "palt"; }
         a { text-decoration: none; color: inherit; }
-        .col { max-width: 600px; margin: 0 auto; min-height: 100dvh; border-left: 1px solid #EFF1F4; border-right: 1px solid #EFF1F4; }
-        .chrome { position: sticky; top: 0; z-index: 10; background: rgba(255, 255, 255, 0.85); backdrop-filter: blur(12px); border-bottom: 1px solid #EFF1F4; }
-        .chrome-row { display: flex; align-items: center; padding: 0.6rem 1rem; }
-        .brand { display: flex; align-items: center; gap: 0.5rem; font-weight: 800; font-size: 1.05rem; letter-spacing: -0.02em; }
-        .brand .mark { width: 28px; height: 28px; border-radius: 38%; background: linear-gradient(135deg, #FFB03A, #FF7A59); color: #fff; display: flex; align-items: center; justify-content: center; font-size: 0.9rem; font-weight: 800; flex-shrink: 0; }
-        .page-title { padding: 0.55rem 1rem 0.7rem; font-weight: 800; font-size: 1.06rem; }
-        .post { display: flex; gap: 0.75rem; padding: 0.9rem 1rem; border-bottom: 1px solid #EFF1F4; }
-        .avatar { width: 44px; height: 44px; border-radius: 999px; flex-shrink: 0; color: #fff; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 1.1rem; }
-        .post-body { flex: 1; min-width: 0; }
-        .post-head { display: flex; align-items: baseline; gap: 0.3rem; flex-wrap: wrap; }
-        .post-head .name { font-weight: 700; font-size: 0.94rem; }
-        .post-head .time { color: #5B6570; font-size: 0.82rem; font-variant-numeric: tabular-nums; }
-        .post-head .time::before { content: "・"; margin-right: 0.05rem; color: #98A1A8; }
-        .topic { margin-left: auto; border-radius: 999px; padding: 0.1rem 0.6rem; font-size: 0.7rem; font-weight: 700; }
-        .post-title { font-weight: 700; font-size: 0.96rem; margin: 0.28rem 0 0.06rem; }
-        .post-text { font-size: 0.94rem; line-height: 1.7; color: #0F1419; overflow-wrap: anywhere; white-space: pre-wrap; }
-        .post-actions { display: flex; gap: 1.2rem; margin-top: 0.5rem; }
-        .post-actions button { background: none; border: none; padding: 0; color: #5B6570; font-size: 0.8rem; font-weight: 600; cursor: pointer; font-family: inherit; }
-        .post-actions button:hover { color: #D6402C; text-decoration: underline; text-underline-offset: 3px; }
-        .post-actions button:focus-visible { outline: 2px solid #E8792B; outline-offset: 2px; border-radius: 4px; }
-        .reply-form { padding: 0.9rem 1rem 1.1rem; border-bottom: 1px solid #EFF1F4; }
-        .reply-form label { display: block; color: #5B6570; margin-bottom: 0.4rem; font-size: 0.8rem; font-weight: 700; }
-        .reply-form textarea { width: 100%; min-height: 90px; padding: 0.72rem 0.85rem; border: 1px solid #D3D9DE; border-radius: 10px; font-size: 0.95rem; font-family: inherit; line-height: 1.7; resize: vertical; background: #fff; color: #0F1419; }
-        .reply-form textarea:focus { outline: none; border-color: #0F1419; box-shadow: 0 0 0 3px rgba(232, 121, 43, 0.18); }
-        .reply-form .row { display: flex; justify-content: space-between; align-items: center; margin-top: 0.6rem; }
-        .btn-primary { background: #0F1419; color: #fff; border: none; padding: 0.55rem 1.4rem; border-radius: 999px; font-size: 0.88rem; font-weight: 700; cursor: pointer; font-family: inherit; }
-        .btn-primary:hover { background: #272C30; }
+        .wrap { max-width: 640px; margin: 0 auto; padding: 1.2rem 1rem 3rem; }
+        .brand { display: inline-flex; align-items: center; gap: 0.6rem; font-weight: 800; font-size: 1.25rem; letter-spacing: -0.02em; margin-bottom: 1rem; }
+        .brand .mark { width: 36px; height: 36px; border-radius: 30%; background: linear-gradient(135deg, #FFB03A, #FF7A59); color: #fff; display: flex; align-items: center; justify-content: center; font-size: 1.1rem; font-weight: 800; flex-shrink: 0; }
+        .card { background: #fff; border: 1px solid #EFEDE8; border-radius: 22px; overflow: hidden; }
+        .card-head { display: flex; justify-content: space-between; align-items: center; padding: 1rem 1.25rem; border-bottom: 1px solid #EFEDE8; }
+        .card-head h1 { font-size: 1rem; font-weight: 800; }
+        .card-head a { color: #7A7F85; font-size: 0.8rem; font-weight: 600; }
+        .card-head a:hover { color: #1A1A1A; text-decoration: underline; text-underline-offset: 3px; }
+        .card-head a:focus-visible { outline: 2px solid #E8792B; outline-offset: 2px; border-radius: 4px; }
+        .item { display: flex; gap: 0.9rem; padding: 1.1rem 1.25rem; border-bottom: 1px solid #EFEDE8; }
+        .avatar { width: 52px; height: 52px; border-radius: 30%; flex-shrink: 0; color: #fff; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 1.2rem; }
+        .reply .avatar { width: 42px; height: 42px; font-size: 1rem; }
+        .item-body { flex: 1; min-width: 0; }
+        .item-head { display: flex; align-items: baseline; gap: 0.5rem; flex-wrap: wrap; }
+        .item-head .name { font-weight: 800; font-size: 0.95rem; }
+        .item-head .time { color: #9AA0A6; font-size: 0.78rem; font-variant-numeric: tabular-nums; }
+        .topic { margin-left: auto; border-radius: 999px; padding: 0.2rem 0.7rem; font-size: 0.7rem; font-weight: 700; }
+        .post-title { font-weight: 800; font-size: 0.98rem; margin: 0.35rem 0 0.15rem; }
+        .item-text { font-size: 0.92rem; line-height: 1.85; color: #3A3F45; overflow-wrap: anywhere; white-space: pre-wrap; }
+        .reply .item-text { margin-top: 0.2rem; color: #1A1A1A; }
+        .reply-delete { margin-top: 0.4rem; }
+        .reply-delete button { background: none; border: none; padding: 0; color: #9AA0A6; font-size: 0.78rem; font-weight: 600; cursor: pointer; font-family: inherit; }
+        .reply-delete button:hover { color: #D6402C; text-decoration: underline; text-underline-offset: 3px; }
+        .reply-delete button:focus-visible { outline: 2px solid #E8792B; outline-offset: 2px; border-radius: 4px; }
+        .section-title { padding: 0.9rem 1.25rem; font-weight: 800; font-size: 0.9rem; background: #FAF9F6; border-bottom: 1px solid #EFEDE8; }
+        .empty { color: #7A7F85; text-align: center; padding: 2rem 1rem; border-bottom: 1px solid #EFEDE8; font-size: 0.9rem; }
+        .reply-form { padding: 1.2rem 1.25rem 1.5rem; }
+        .reply-form label { display: block; color: #6B7178; margin-bottom: 0.6rem; font-size: 0.8rem; font-weight: 700; }
+        .reply-form textarea { width: 100%; min-height: 100px; padding: 0.8rem 1rem; border: 1px solid #DEDBD4; border-radius: 14px; font-size: 0.95rem; font-family: inherit; line-height: 1.7; resize: vertical; background: #fff; color: #1A1A1A; }
+        .reply-form textarea:focus { outline: none; border-color: #1A1A1A; box-shadow: 0 0 0 3px rgba(232, 121, 43, 0.18); }
+        .error { color: #D6402C; font-size: 0.83rem; margin-top: 0.4rem; }
+        .btn-primary { margin-top: 1rem; background: #131316; color: #fff; border: none; padding: 0.8rem 1.6rem; border-radius: 14px; font-size: 0.9rem; font-weight: 700; cursor: pointer; font-family: inherit; }
+        .btn-primary:hover { background: #2B2B30; }
         .btn-primary:focus-visible { outline: 2px solid #E8792B; outline-offset: 2px; }
-        .error { color: #D6402C; font-size: 0.83rem; margin-top: 0.3rem; }
-        .counter { color: #5B6570; font-size: 0.8rem; font-variant-numeric: tabular-nums; }
-        .counter.over { color: #D6402C; font-weight: 700; }
-        .section-title { padding: 0.7rem 1rem 0.5rem; font-weight: 800; font-size: 0.9rem; border-bottom: 1px solid #EFF1F4; }
-        .empty { color: #5B6570; text-align: center; padding: 2.5rem 1rem; }
     </style>
 </head>
 <body>
@@ -73,87 +74,63 @@
         ];
         [$g1, $g2] = $grad[crc32($post->user->name) % count($grad)];
         [$tBg, $tFg] = $topicTone[$post->category->name] ?? ['#F0F1F3', '#57606A'];
-        $max = \App\Models\Post::CONTENT_MAX_LENGTH;
-        $remaining = $max - mb_strlen(str_replace("\r\n", "\n", old('content', '')));
     @endphp
-    <div class="col">
-        <header class="chrome">
-            <div class="chrome-row">
-                <a href="{{ route('posts.index') }}" class="brand"><span class="mark">つ</span>つぶやき投稿アプリ</a>
-            </div>
-            <div class="page-title">ポスト</div>
-        </header>
+    <div class="wrap">
+        <a href="{{ route('posts.index') }}" class="brand"><span class="mark">つ</span>つぶやき投稿アプリ</a>
 
-        <main>
-            <article class="post">
+        <main class="card">
+            <div class="card-head">
+                <h1>ポスト</h1>
+                <a href="{{ route('posts.index') }}">ホームに戻る</a>
+            </div>
+
+            <article class="item">
                 <div class="avatar" style="background: linear-gradient(135deg, {{ $g1 }}, {{ $g2 }});">{{ mb_substr($post->user->name, 0, 1) }}</div>
-                <div class="post-body">
-                    <div class="post-head">
+                <div class="item-body">
+                    <div class="item-head">
                         <span class="name">{{ $post->user->name }}</span>
                         <span class="time">{{ $post->created_at->format('n月j日 H:i') }}</span>
                         <span class="topic" style="background: {{ $tBg }}; color: {{ $tFg }};">{{ $post->category->name }}</span>
                     </div>
                     <p class="post-title">{{ $post->title }}</p>
-                    <p class="post-text">{{ $post->content }}</p>
+                    <p class="item-text">{{ $post->content }}</p>
                 </div>
             </article>
 
+            <h2 class="section-title">リプライ({{ $replies->count() }})</h2>
+            @forelse ($replies as $reply)
+                @php [$r1, $r2] = $grad[crc32($reply->user->name) % count($grad)]; @endphp
+                <article class="item reply">
+                    <div class="avatar" style="background: linear-gradient(135deg, {{ $r1 }}, {{ $r2 }});">{{ mb_substr($reply->user->name, 0, 1) }}</div>
+                    <div class="item-body">
+                        <div class="item-head">
+                            <span class="name">{{ $reply->user->name }}</span>
+                            <span class="time">{{ $reply->created_at->format('n月j日 H:i') }}</span>
+                        </div>
+                        <p class="item-text">{{ $reply->content }}</p>
+                        @can('delete', $reply)
+                            <form class="reply-delete" action="{{ route('replies.destroy', $reply) }}" method="POST">
+                                @csrf
+                                @method('DELETE')
+                                <button type="submit">削除</button>
+                            </form>
+                        @endcan
+                    </div>
+                </article>
+            @empty
+                <p class="empty">まだリプライがありません。</p>
+            @endforelse
+
             <form class="reply-form" action="{{ route('replies.store', $post) }}" method="POST">
                 @csrf
-                <label for="content">リプライ</label>
-                <textarea id="content" name="content" placeholder="一言返す" required>{{ old('content') }}</textarea>
+                <label for="content">リプライする</label>
+                <textarea id="content" name="content" required>{{ old('content') }}</textarea>
                 @error('content')
                     <p class="error">{{ $message }}</p>
                 @enderror
-                <div class="row">
-                    <p id="content-counter" class="counter @if($remaining < 0) over @endif" aria-live="polite">{{ $remaining >= 0 ? "残り {$remaining} 字" : '超過 '.(-$remaining).' 字' }}</p>
-                    <button type="submit" class="btn-primary">返信する</button>
-                </div>
+                <button type="submit" class="btn-primary">送信</button>
             </form>
-
-            <h2 class="section-title">リプライ（{{ $replies->count() }}件）</h2>
-            @if($replies->isEmpty())
-                <p class="empty">まだリプライがありません。</p>
-            @else
-                @foreach ($replies as $reply)
-                    @php [$r1, $r2] = $grad[crc32($reply->user->name) % count($grad)]; @endphp
-                    <article class="post">
-                        <div class="avatar" style="background: linear-gradient(135deg, {{ $r1 }}, {{ $r2 }});">{{ mb_substr($reply->user->name, 0, 1) }}</div>
-                        <div class="post-body">
-                            <div class="post-head">
-                                <span class="name">{{ $reply->user->name }}</span>
-                                <span class="time">{{ $reply->created_at->format('n月j日 H:i') }}</span>
-                            </div>
-                            <p class="post-text">{{ $reply->content }}</p>
-                            @can('delete', $reply)
-                                <div class="post-actions">
-                                    <form action="{{ route('replies.destroy', $reply) }}" method="POST" style="display: inline;">
-                                        @csrf
-                                        @method('DELETE')
-                                        <button type="submit">削除</button>
-                                    </form>
-                                </div>
-                            @endcan
-                        </div>
-                    </article>
-                @endforeach
-            @endif
         </main>
     </div>
-
-    <script>
-        const textarea = document.getElementById('content');
-        const counter = document.getElementById('content-counter');
-        const max = @json($max);
-
-        function updateCounter() {
-            const remaining = max - [...textarea.value].length;
-            counter.textContent = remaining >= 0 ? `残り ${remaining} 字` : `超過 ${-remaining} 字`;
-            counter.classList.toggle('over', remaining < 0);
-        }
-
-        textarea.addEventListener('input', updateCounter);
-        updateCounter();
-    </script>
 </body>
 </html>
