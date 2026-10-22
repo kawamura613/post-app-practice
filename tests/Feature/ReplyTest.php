@@ -241,8 +241,7 @@ class ReplyTest extends TestCase
     {
         $this->actingAs($this->other)->get(route('posts.index'))
             ->assertOk()
-            ->assertSee(route('posts.show', $this->post), false)
-            ->assertSee('返信');
+            ->assertSee('<a href="'.route('posts.show', $this->post).'">返信</a>', false);
     }
 
     public function test_タイムラインの編集と削除は従来どおり本人にだけ出る(): void
