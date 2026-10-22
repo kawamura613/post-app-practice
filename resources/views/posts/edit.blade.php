@@ -28,6 +28,8 @@
         .btn-secondary:hover { background: #F7F8F9; }
         .btn:focus-visible { outline: 2px solid #E8792B; outline-offset: 2px; }
         .error { color: #D6402C; font-size: 0.83rem; margin-top: 0.3rem; }
+        .counter { color: #5B6570; font-size: 0.8rem; margin-top: 0.3rem; text-align: right; font-variant-numeric: tabular-nums; }
+        .counter.over { color: #D6402C; font-weight: 700; }
     </style>
 </head>
 <body>
@@ -67,6 +69,11 @@
                 <div class="form-group">
                     <label for="content">本文</label>
                     <textarea id="content" name="content" required>{{ old('content', $post->content) }}</textarea>
+                    @php
+                        $max = \App\Models\Post::CONTENT_MAX_LENGTH;
+                        $remaining = $max - mb_strlen(str_replace("\r\n", "\n", old('content', $post->content)));
+                    @endphp
+                    <p id="content-counter" class="counter @if($remaining < 0) over @endif" aria-live="polite">{{ $remaining >= 0 ? "残り {$remaining} 字" : '超過 '.(-$remaining).' 字' }}</p>
                     @error('content')
                         <p class="error">{{ $message }}</p>
                     @enderror
@@ -79,5 +86,20 @@
             </form>
         </main>
     </div>
+
+    <script>
+        const textarea = document.getElementById('content');
+        const counter = document.getElementById('content-counter');
+        const max = @json($max);
+
+        function updateCounter() {
+            const remaining = max - [...textarea.value].length;
+            counter.textContent = remaining >= 0 ? `残り ${remaining} 字` : `超過 ${-remaining} 字`;
+            counter.classList.toggle('over', remaining < 0);
+        }
+
+        textarea.addEventListener('input', updateCounter);
+        updateCounter();
+    </script>
 </body>
 </html>

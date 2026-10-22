@@ -63,13 +63,21 @@ class PostContentLimitTest extends TestCase
             ->assertSessionHasErrors(['content' => '本文を入力してください。']);
     }
 
-    public function test_改行を含む140字はCRLFで送られても更新できる(): void
+    public function test_改行を含む140字は改行コードがcrlfでも更新できる(): void
     {
         // 文字 138 字 + 改行 2 つ = 140 字。CRLF のまま数えると 142 字になってしまう
         $this->update("あ\r\n\r\n".str_repeat('い', 137))
             ->assertRedirect(route('posts.index'));
 
         $this->assertSame("あ\n\n".str_repeat('い', 137), $this->post->fresh()->content);
+    }
+
+    public function test_編集画面に残り字数が表示される(): void
+    {
+        // 元の本文「元の本文」は 4 字
+        $this->actingAs($this->author)->get(route('posts.edit', $this->post))
+            ->assertOk()
+            ->assertSee('残り 136 字');
     }
 
     public function test_他人の投稿は従来どおり更新できない(): void
