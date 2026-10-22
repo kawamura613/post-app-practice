@@ -84,6 +84,20 @@ class ReplyTest extends TestCase
             ->assertDontSee('別のポストへの返信');
     }
 
+    public function test_別のポストのリプライは出ない(): void
+    {
+        $anotherPost = $this->makePost('別のタイトル', '別の本文');
+        $this->makeReply($this->other, '別のポストだけへの返信', $anotherPost);
+
+        $this->actingAs($this->author)->get(route('posts.show', $this->post))
+            ->assertOk()
+            ->assertDontSee('別のポストだけへの返信');
+
+        $this->actingAs($this->author)->get(route('posts.show', $anotherPost))
+            ->assertOk()
+            ->assertSee('別のポストだけへの返信');
+    }
+
     public function test_リプライは新しい順に並ぶ(): void
     {
         $this->makeReply($this->other, '古い返信', null, '2024-01-01 10:00:00');
