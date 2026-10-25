@@ -18,6 +18,9 @@
         .logout-btn { background: #FFFFFF; color: #0F1419; border: 1px solid #D3D9DE; padding: 0.38rem 1rem; border-radius: 999px; font-size: 0.8rem; font-weight: 700; cursor: pointer; font-family: inherit; flex-shrink: 0; }
         .logout-btn:hover { background: #F7F8F9; }
         .logout-btn:focus-visible { outline: 2px solid #E8792B; outline-offset: 2px; }
+        .write-btn { background: #0F1419; color: #fff; padding: 0.38rem 1rem; border-radius: 999px; font-size: 0.8rem; font-weight: 700; flex-shrink: 0; white-space: nowrap; }
+        .write-btn:hover { background: #272C30; }
+        .write-btn:focus-visible { outline: 2px solid #E8792B; outline-offset: 2px; }
         .page-title { padding: 0.55rem 1rem 0.7rem; font-weight: 800; font-size: 1.06rem; }
         .post { display: flex; gap: 0.75rem; padding: 0.9rem 1rem; border-bottom: 1px solid #EFF1F4; }
         .post:hover { background: #F7F8F9; }
@@ -45,6 +48,7 @@
                 <a href="{{ route('posts.index') }}" class="brand"><span class="mark">つ</span>つぶやき投稿アプリ</a>
                 <div class="me">
                     <span class="name">{{ auth()->user()->name }}（{{ auth()->user()->email }}）</span>
+                    <a href="{{ route('posts.create') }}" class="write-btn">ポストする</a>
                     <form action="{{ route('logout') }}" method="POST">
                         @csrf
                         <button type="submit" class="logout-btn">ログアウト</button>
