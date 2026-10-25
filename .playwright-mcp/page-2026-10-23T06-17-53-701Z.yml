@@ -1,0 +1,27 @@
+- generic [ref=f4e2]:
+  - banner [ref=f4e3]:
+    - link "つ つぶやき投稿アプリ" [ref=f4e5] [cursor=pointer]:
+      - /url: http://localhost/posts
+      - generic [ref=f4e6]: つ
+      - text: つぶやき投稿アプリ
+    - generic [ref=f4e7]: ポストを書く
+  - main [ref=f4e8]:
+    - generic [ref=f4e9]:
+      - generic [ref=f4e10]:
+        - generic [ref=f4e11]: タイトル
+        - textbox "タイトル" [ref=f4e12]: 動作確認テスト
+      - generic [ref=f4e13]:
+        - generic [ref=f4e14]: トピック
+        - combobox "トピック" [ref=f4e15]:
+          - option "お知らせ"
+          - option "技術メモ"
+          - option "雑記" [selected]
+      - generic [ref=f4e16]:
+        - generic [ref=f4e17]: 本文
+        - textbox "本文" [ref=f4e18]
+        - paragraph [ref=f4e19]: 残り 140 字
+        - paragraph [ref=f4e20]: 本文を入力してください。
+      - generic [ref=f4e21]:
+        - button "投稿" [ref=f4e22] [cursor=pointer]
+        - link "キャンセル" [ref=f4e23] [cursor=pointer]:
+          - /url: http://localhost/posts
