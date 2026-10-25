@@ -6,6 +6,17 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 小さな投稿アプリ（Laravel 10 / PHP 8.1+ / MySQL / Laravel Fortify 認証）。ポストの一覧・編集・削除と、ポストへのリプライ機能がある。README・設計書・コミットメッセージは日本語で書かれており、コミットメッセージは末尾に Issue 番号を付ける形式（例: `ポストへのリプライ機能を追加 (#1)`）。
 
+## アプリの前提
+
+### 今ある動きを壊さない
+
+- 今ある動き（一覧・編集・削除）を壊さない。
+
+### 入力チェックのメッセージ
+
+- 利用者に見せるメッセージは日本語。`validate()` の第 2 引数でフィールドごとに指定する（例: `'content.required' => '本文を入力してください。'`）。
+- `config/app.php` の `locale` は `en` で `lang/ja` もないため、メッセージを指定していない項目（現状 `title`・`category_id`）は英語の既定文言になる。検証ルールを足すときは日本語メッセージも必ず付ける。
+
 ## Commands
 
 実行環境は Laravel Sail（Docker）。`.env` は MySQL 前提なので、`artisan` / `phpunit` / `pint` は `./vendor/bin/sail` 経由で実行する。
@@ -34,3 +45,17 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 - `docs/` は自分で作る設計書置き場（機能一覧、画面一覧、入力チェック表、メッセージ一覧など）。機能追加の設計は `docs/reply.md` のように Issue 番号を書いて置く。リプライ機能の仕様（作らないもの: 入れ子リプライ・リプライ編集）は `docs/reply.md` が正。
 - `answers/` は Tutorial 13 の解答例で、アプリのコードとは無関係。読み書きの対象にしない。
+
+## 作業の進め方
+
+### テスト
+
+- 機能の追加・変更にはテスト（`tests/Feature/`）も書く。`./vendor/bin/sail test` で回し、通るまで直す。
+- 完了報告に、実行したコマンドとテスト結果（成功・失敗の件数）を書く。
+
+### Pull Request
+
+PR の本文に次の 2 つを書く。
+
+- テスト結果: 実行したコマンドと結果。
+- 受け入れ条件の突き合わせ: Issue の受け入れ条件を 1 つずつ挙げ、どのテストや確認で満たしたかを対応づける。
