@@ -1,18 +1,32 @@
 {
   "permissions": {
-    "allow": [
-      "Bash(./vendor/bin/sail test)",
-      "Bash(./vendor/bin/sail test *)",
-      "Bash(./vendor/bin/sail artisan test)",
-      "Bash(./vendor/bin/sail artisan test *)"
+    "deny": [
+      "Read(.env)",
+      "Read(.env.*)",
+      "Edit(.env)",
+      "Edit(.env.*)"
     ],
     "ask": [
-      "Bash(git push)",
       "Bash(git push *)"
     ],
-    "deny": [
-      "Read(./.env)",
-      "Read(./.env.local)"
+    "allow": [
+      "Bash(./vendor/bin/sail test *)",
+      "Bash(sail test *)",
+      "Bash(./vendor/bin/sail artisan test *)",
+      "Bash(sail artisan test *)"
+    ]
+  },
+  "hooks": {
+    "PostToolUse": [
+      {
+        "matcher": "Edit|Write",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "test -x vendor/bin/sail || exit 0; ./vendor/bin/sail artisan test >&2 || exit 2"
+          }
+        ]
+      }
     ]
   }
 }
