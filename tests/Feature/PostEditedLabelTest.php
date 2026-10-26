@@ -80,7 +80,8 @@ class PostEditedLabelTest extends TestCase
 
         $response = $this->actingAs($this->author)
             ->get(route('posts.index'))
-            ->assertSeeInOrder(['触っていないタイトル', '直したタイトル', '編集済み']);
+            // 新しい順なので触っていないポストが先。「編集済み」はヘッダー（タイトルより前）に出る
+            ->assertSeeInOrder(['触っていないタイトル', '編集済み', '直したタイトル']);
 
         $this->assertSame(1, substr_count($response->getContent(), '編集済み'));
     }
