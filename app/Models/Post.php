@@ -34,4 +34,10 @@ class Post extends Model
     {
         return $this->hasMany(Reply::class);
     }
+
+    // 列は足さず、作成後に更新された（updated_at が created_at より後）ポストを編集済みとみなす
+    public function isEdited(): bool
+    {
+        return $this->updated_at->gt($this->created_at);
+    }
 }
