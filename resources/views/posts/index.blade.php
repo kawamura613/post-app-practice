@@ -38,6 +38,9 @@
         .post-actions a:hover { color: #0F1419; text-decoration: underline; text-underline-offset: 3px; }
         .post-actions button:hover { color: #D6402C; text-decoration: underline; text-underline-offset: 3px; }
         .post-actions a:focus-visible, .post-actions button:focus-visible { outline: 2px solid #E8792B; outline-offset: 2px; border-radius: 4px; }
+        .post-actions .like-btn { display: inline-flex; align-items: center; gap: 0.3rem; font-variant-numeric: tabular-nums; }
+        .post-actions .like-btn:hover { color: #E0245E; text-decoration: none; }
+        .post-actions .like-btn.liked { color: #E0245E; font-weight: 700; }
         .empty { color: #5B6570; text-align: center; padding: 3.5rem 1rem; }
     </style>
 </head>
@@ -106,6 +109,16 @@
                             <p class="post-title">{{ $post->title }}</p>
                             <p class="post-text">{{ $post->content }}</p>
                             <div class="post-actions">
+                                <form action="{{ route('likes.' . ($post->liked_by_me ? 'destroy' : 'store'), $post) }}" method="POST" style="display: inline;">
+                                    @csrf
+                                    @if($post->liked_by_me)
+                                        @method('DELETE')
+                                    @endif
+                                    <button type="submit" class="like-btn{{ $post->liked_by_me ? ' liked' : '' }}" aria-pressed="{{ $post->liked_by_me ? 'true' : 'false' }}" aria-label="{{ $post->liked_by_me ? 'いいねを取り消す' : 'いいねする' }}">
+                                        <span aria-hidden="true">{{ $post->liked_by_me ? '♥' : '♡' }}</span>
+                                        <span class="like-count">{{ $post->likes_count }}</span>
+                                    </button>
+                                </form>
                                 <a href="{{ route('posts.show', $post) }}">返信</a>
                                 @can('update', $post)
                                     <a href="{{ route('posts.edit', $post) }}">編集</a>

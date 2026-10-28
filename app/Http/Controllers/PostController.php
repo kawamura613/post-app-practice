@@ -10,7 +10,10 @@ class PostController extends Controller
 {
     public function index()
     {
-        $posts = Post::with(['user', 'category'])->latest()->latest('id')->get();
+        $posts = Post::with(['user', 'category'])
+            ->withCount('likedBy as likes_count')
+            ->withExists(['likedBy as liked_by_me' => fn ($query) => $query->where('users.id', auth()->id())])
+            ->latest()->latest('id')->get();
 
         return view('posts.index', compact('posts'));
     }

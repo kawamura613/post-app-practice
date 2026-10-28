@@ -38,10 +38,10 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 ## Architecture
 
 - ルートは `routes/web.php` に集約。ポスト・リプライ関連はすべて `auth` ミドルウェアのグループ内（未ログインは見られない）。`/` だけ公開の welcome ページ。
-- モデルの関係: `User` 1─n `Post` / `Reply`、`Post` 1─n `Reply`、`Category` 1─n `Post`。`replies` は `posts` / `users` への外部キーで連動削除（ポストを消すとリプライも消える）。
+- モデルの関係: `User` 1─n `Post` / `Reply`、`Post` 1─n `Reply`、`Category` 1─n `Post`、`User` n─n `Post`（いいね。中間テーブル `likes`、同じ組は 1 件だけ）。いいねの数は `posts` に列を持たず `likes` の行数から数える（`posts.updated_at` が動くと「編集済み」の判定に響くため、いいねで `posts` の行を更新しない）。`replies` は `posts` / `users` への外部キーで連動削除（ポストを消すとリプライも消える）。
 - 認可は Policy（`PostPolicy` の update/delete、`ReplyPolicy` の delete）。`AuthServiceProvider::$policies` には登録しておらず、Laravel の自動検出に任せている。コントローラーでは `$this->authorize(...)` で呼ぶ。判定は「`user_id` が本人か」のみ。他人のものはビューでボタンを隠し、URL 直打ちは 403。
 - 本文の入力チェックは `PostController::update` と `ReplyController::store` で同じルール・同じメッセージを使う（`required|string|max:Post::CONTENT_MAX_LENGTH`、上限 140 字）。ブラウザの CRLF 改行が 2 文字に数えられないよう、検証前に `\r\n` → `\n` へ置換している。上限値を変えるときは `Post::CONTENT_MAX_LENGTH` を使い、ビューの残り字数表示（`resources/views/posts/edit.blade.php`）も合わせて確認する。
-- 一覧・詳細でビューが関連モデルを引くときは、コントローラーで `with()`（または `load()`）を付けて先読みする（N+1 を避ける）。今は `PostController::index` が `Post::with(['user', 'category'])`、`show` が `$post->load(['user', 'category'])` と `replies()->with('user')`。クエリを足す・直すときは、ビューで使う関連が `with()` に入っているかを差分で確かめる。
+- 一覧・詳細でビューが関連モデルを引くときは、コントローラーで `with()`（または `load()`）を付けて先読みする（N+1 を避ける）。今は `PostController::index` が `Post::with(['user', 'category'])` に `withCount`（`likes_count`）と `withExists`（`liked_by_me`）を足したもの、`show` が `$post->load(['user', 'category'])` と `replies()->with('user')`。クエリを足す・直すときは、ビューで使う関連が `with()` に入っているかを差分で確かめる。
 - ポスト詳細（`PostController::show`）のリプライは新しい順（`latest()->latest('id')`）。認証は Fortify（`app/Actions/Fortify`、`FortifyServiceProvider`）、ビューは `resources/views/{auth,posts}` の Blade。
 
 ## Docs
