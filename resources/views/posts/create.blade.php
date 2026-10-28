@@ -27,6 +27,10 @@
         .btn-secondary { background: #FFFFFF; color: #0F1419; border: 1px solid #D3D9DE; }
         .btn-secondary:hover { background: #F7F8F9; }
         .btn:focus-visible { outline: 2px solid #E8792B; outline-offset: 2px; }
+        .tag-options { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+        .tag-option { display: inline-flex; align-items: center; gap: 0.35rem; margin: 0; padding: 0.35rem 0.8rem; border: 1px solid #D3D9DE; border-radius: 999px; color: #0F1419; font-size: 0.85rem; font-weight: 600; cursor: pointer; }
+        .tag-option:has(input:checked) { background: #E8F1FD; border-color: #2F5AA8; color: #2F5AA8; }
+        .tag-option:has(input:focus-visible) { outline: 2px solid #E8792B; outline-offset: 2px; }
         .error { color: #D6402C; font-size: 0.83rem; margin-top: 0.3rem; }
         .counter { color: #5B6570; font-size: 0.8rem; margin-top: 0.3rem; text-align: right; font-variant-numeric: tabular-nums; }
         .counter.over { color: #D6402C; font-weight: 700; }
@@ -61,6 +65,24 @@
                         @endforeach
                     </select>
                     @error('category_id')
+                        <p class="error">{{ $message }}</p>
+                    @enderror
+                </div>
+
+                <div class="form-group">
+                    <label id="tag-label">タグ（なくてもよい）</label>
+                    <div class="tag-options" role="group" aria-labelledby="tag-label">
+                        @foreach ($tags as $tag)
+                            <label class="tag-option">
+                                <input type="checkbox" name="tag_ids[]" value="{{ $tag->id }}" @checked(in_array($tag->id, old('tag_ids', [])))>
+                                <span>{{ $tag->name }}</span>
+                            </label>
+                        @endforeach
+                    </div>
+                    @error('tag_ids')
+                        <p class="error">{{ $message }}</p>
+                    @enderror
+                    @error('tag_ids.*')
                         <p class="error">{{ $message }}</p>
                     @enderror
                 </div>

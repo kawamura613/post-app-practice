@@ -42,6 +42,12 @@
         .post-actions .like-btn { display: inline-flex; align-items: center; gap: 0.3rem; font-variant-numeric: tabular-nums; }
         .post-actions .like-btn:hover { color: #E0245E; text-decoration: none; }
         .post-actions .like-btn.liked { color: #E0245E; font-weight: 700; }
+        .tag-filter { display: flex; flex-wrap: wrap; gap: 0.4rem; padding: 0 1rem 0.7rem; }
+        .post-tags { display: flex; flex-wrap: wrap; gap: 0.35rem; margin-top: 0.45rem; }
+        .tag-chip { border: 1px solid #D3D9DE; border-radius: 999px; padding: 0.12rem 0.65rem; color: #2F5AA8; font-size: 0.76rem; font-weight: 600; }
+        .tag-chip:hover { background: #E8F1FD; }
+        .tag-chip.active { background: #2F5AA8; border-color: #2F5AA8; color: #fff; }
+        .tag-chip:focus-visible { outline: 2px solid #E8792B; outline-offset: 2px; }
         .empty { color: #5B6570; text-align: center; padding: 3.5rem 1rem; }
     </style>
 </head>
@@ -60,11 +66,17 @@
                 </div>
             </div>
             <div class="page-title">ホーム</div>
+            <nav class="tag-filter" aria-label="タグで絞り込む">
+                <a href="{{ route('posts.index') }}" class="tag-chip{{ $selectedTag ? '' : ' active' }}" @if(! $selectedTag) aria-current="true" @endif>すべて</a>
+                @foreach ($tags as $tag)
+                    <a href="{{ route('posts.index', ['tag' => $tag->id]) }}" class="tag-chip{{ $selectedTag?->id === $tag->id ? ' active' : '' }}" @if($selectedTag?->id === $tag->id) aria-current="true" @endif>{{ $tag->name }}</a>
+                @endforeach
+            </nav>
         </header>
 
         <main class="feed">
             @if($posts->isEmpty())
-                <p class="empty">まだポストがありません。</p>
+                <p class="empty">{{ $selectedTag ? 'このタグが付いたポストはまだありません。' : 'まだポストがありません。' }}</p>
             @else
                 @php
                     // アイコンの色は登録した名前から決まる（crc32 % 18）
@@ -112,6 +124,13 @@
                             </div>
                             <p class="post-title">{{ $post->title }}</p>
                             <p class="post-text">{{ $post->content }}</p>
+                            @if($post->tags->isNotEmpty())
+                                <div class="post-tags">
+                                    @foreach ($post->tags as $tag)
+                                        <a href="{{ route('posts.index', ['tag' => $tag->id]) }}" class="tag-chip">{{ $tag->name }}</a>
+                                    @endforeach
+                                </div>
+                            @endif
                             <div class="post-actions">
                                 <form action="{{ route('likes.' . ($post->liked_by_me ? 'destroy' : 'store'), $post) }}" method="POST" style="display: inline;">
                                     @csrf
