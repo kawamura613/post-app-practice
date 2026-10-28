@@ -4,6 +4,7 @@ namespace Database\Seeders;
 
 use App\Models\Category;
 use App\Models\Post;
+use App\Models\Tag;
 use App\Models\User;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
@@ -16,6 +17,22 @@ class DatabaseSeeder extends Seeder
         $notice = Category::create(['name' => 'お知らせ']);
         $tech = Category::create(['name' => '技術メモ']);
         $etc = Category::create(['name' => '雑記']);
+
+        // タグ（あらかじめ用意する 5 件。トピックとは別のもの）
+        $tags = collect(['#Laravel', '#PHP', '#MySQL', '#テスト', '#学習中'])
+            ->mapWithKeys(fn ($name) => [$name => Tag::create(['name' => $name])]);
+
+        // タグを付けるポスト（タイトル => タグ名）。ここに無いポストにはタグが付かない
+        $taggedPosts = [
+            'マイグレーションの向き' => ['#Laravel', '#MySQL'],
+            'N+1にはまった' => ['#Laravel', '#MySQL'],
+            'バリデーションの置き場所' => ['#Laravel', '#PHP'],
+            'ルートの命名' => ['#Laravel'],
+            'ミドルウェアのイメージ' => ['#Laravel', '#学習中'],
+            'ポリシーを書いた' => ['#Laravel', '#PHP'],
+            'テストを先に書いてみた' => ['#テスト', '#学習中'],
+            '勉強会やります' => ['#Laravel', '#学習中'],
+        ];
 
         // 検証用アカウント（メールとパスワードは変更しない）
         $haruka = User::create([
@@ -66,7 +83,7 @@ class DatabaseSeeder extends Seeder
         ];
 
         foreach ($posts as [$user, $category, $title, $content, $hoursAgo]) {
-            Post::create([
+            $post = Post::create([
                 'user_id' => $user->id,
                 'category_id' => $category->id,
                 'title' => $title,
@@ -74,6 +91,9 @@ class DatabaseSeeder extends Seeder
                 'created_at' => now()->subHours($hoursAgo),
                 'updated_at' => now()->subHours($hoursAgo),
             ]);
+
+            // 中間テーブルへの書き込みなので posts.updated_at は動かない（「編集済み」にならない）
+            $post->tags()->attach(collect($taggedPosts[$title] ?? [])->map(fn ($name) => $tags[$name]->id));
         }
     }
 }

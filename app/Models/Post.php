@@ -42,6 +42,12 @@ class Post extends Model
         return $this->updated_at->gt($this->created_at);
     }
 
+    // 中間テーブル post_tag。タグはあらかじめ用意されたものから選ぶ（付け外しで posts.updated_at は動かない）
+    public function tags(): BelongsToMany
+    {
+        return $this->belongsToMany(Tag::class)->withTimestamps();
+    }
+
     // 中間テーブル likes。いいねの数は列に持たず、行数から数える（posts.updated_at を動かさないため）
     public function likedBy(): BelongsToMany
     {
