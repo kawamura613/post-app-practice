@@ -36,6 +36,12 @@ class Post extends Model
         return $this->hasMany(Reply::class);
     }
 
+    // 列は足さず、作成後に更新された（updated_at が created_at より後）ポストを編集済みとみなす
+    public function isEdited(): bool
+    {
+        return $this->updated_at->gt($this->created_at);
+    }
+
     // 中間テーブル likes。いいねの数は列に持たず、行数から数える（posts.updated_at を動かさないため）
     public function likedBy(): BelongsToMany
     {
