@@ -1,109 +1,110 @@
-# post-app
+# チームチャットアプリ 開発用リポジトリ
 
-投稿を一覧・編集・削除できる、小さな Laravel アプリです。Tutorial 13 から 15 まで、このアプリ 1 本を題材に設計・実装・仕組み化を進めます。
+Tutorial 16「総仕上げ」で、**あなたが一本のアプリを作り切る**ための出発点です。
 
-## できること
+## 入っているもの
 
-- ユーザー登録・ログイン・ログアウト
-- 投稿の一覧表示（投稿者の名前とカテゴリつき）
-- 投稿の編集（タイトル・カテゴリ・本文）と削除
-- 自分の投稿だけを編集・削除（他人の投稿は編集・削除ボタンが出ず、URL を直接開くと 403 になります）
+| | 中身 |
+|:--|:--|
+| `docs/spec.md` | **仕様書**。クライアントからの要求を文章にしたもの |
+| `mockup/` | **画面見本**。`index.html` をブラウザで開くと全10画面を見られます |
+| `docs/design/` | **設計書一式の置き場**。いまは空です。ここにあなたが設計を作ります（構成は `docs/design/README.md`） |
+| Laravel と Sail | 素のLaravelと、Dockerで動かすための設定 |
 
-## フォルダについて
+## 入っていないもの
 
-`answers/` は Tutorial 13 の答え合わせ用で、アプリのコードとは関係ありません。設計書の解答例が入っているだけなので、アプリの動きには影響しません。詳しくは `answers/README.md` を見てください。
+**アプリの機能のコードは、1行も入っていません。**画面もテーブルも、これから設計して、AIと一緒に作ります。
 
-自分で作る設計書は `docs/` に置きます（Tutorial 13 の中で作ります）。
+---
 
-## 使用技術
+## 使いはじめる
 
-| 項目 | 内容 |
-|:-----|:-----|
-| フレームワーク | Laravel 10 |
-| 言語 | PHP |
-| データベース | MySQL |
-| 実行環境 | Laravel Sail（Docker） |
-| 認証 | Laravel Fortify |
-
-PHP と MySQL のバージョンは Sail のコンテナが決めます。手元で確かめるときは `./vendor/bin/sail php -v` と `./vendor/bin/sail mysql --version` を実行してください。
-
-## セットアップ
-
-Docker Desktop（または Docker Engine）を起動してから実行してください。Windows の方は WSL（Ubuntu）のターミナルで実行します。
+1. GitHubのこのページで「**Use this template**」→「Create a new repository」から、**自分のリポジトリ**を作ります
+2. 作ったリポジトリを `~/laravel-practice/` の下に clone します
 
 ```bash
-# パッケージをインストールする
+cd ~/laravel-practice
+git clone <自分のリポジトリのURL> teamchat-app
+cd teamchat-app
+```
+
+---
+
+## 初回起動（5手）
+
+> ⚠️ **先に、80番ポートと3306番ポートを使っている別のアプリを止めてください。**`post-app-practice` などを動かしたままだと、**3手目**（`sail up -d`）で `Bind for 0.0.0.0:80 failed: port is already allocated` と言われて起動しません。そのフォルダで `./vendor/bin/sail stop` を実行してから始めてください。
+
+**1. ライブラリを取ってくる**
+
+```bash
 docker run --rm \
     -u "$(id -u):$(id -g)" \
     -v "$(pwd):/var/www/html" \
     -w /var/www/html \
+    -e COMPOSER_CACHE_DIR=/tmp/composer_cache \
     laravelsail/php82-composer:latest \
     composer install
+```
 
-# 環境ファイルを作る
+**2. 環境変数のファイルを作る**
+
+```bash
 cp .env.example .env
+```
 
-# Sail を起動する
+**3. コンテナを起動する**
+
+```bash
 ./vendor/bin/sail up -d
+```
 
-# アプリケーションキーを作る
+**そのあと30秒ほど待ってください。**コンテナが `Up` になっても、データベースはまだ中で立ち上がっている途中です。待たずに次へ進むと、5手目でこうなります。
+
+```
+SQLSTATE[HY000] [2002] Connection refused (Connection: mysql, ...)
+```
+
+`./vendor/bin/sail ps` の `mysql` の欄が `Up (healthy)` に変われば、確実に繋がります（手元では30秒でした）。**この文言が出たときは、少し待って同じコマンドをもう一度打てば通ります。**
+
+**4. アプリケーションキーを作る**
+
+```bash
 ./vendor/bin/sail artisan key:generate
-
-# テーブルを作り、練習用データを入れる
-./vendor/bin/sail artisan migrate --seed
 ```
 
-ブラウザで `http://localhost` を開くと、トップページが表示されます。
-
-初回起動時は `migrate` で「Connection refused」が出ることがあります。MySQL の起動が終わっていないだけなので、少し待ってからもう一度実行してください。
-
-## 練習用のアカウント
-
-`migrate --seed` で、カテゴリ 3 件（お知らせ・技術メモ・雑記）と、次の 2 人、それぞれの投稿 2 件（計 4 件）が入ります。
-
-| メールアドレス | パスワード | 投稿 |
-|:---------------|:-----------|:-----|
-| `usera@example.com` | `password` | `/posts/1`・`/posts/2` |
-| `userb@example.com` | `password` | `/posts/3`・`/posts/4` |
-
-本物の値は入っていません。すべて練習用のダミーです。
-
-## テスト
+**5. テーブルを作る**
 
 ```bash
-./vendor/bin/sail artisan test
+./vendor/bin/sail artisan migrate
 ```
 
-## 停止
+ブラウザで <http://localhost> を開いて、Laravelの初期画面が出れば準備完了です。
+
+> 💡 5手目に `--seed` は付けません。初期データは、これから機能を作りながら自分で積んでいきます。
+
+---
+
+## 止める・片づける
 
 ```bash
-./vendor/bin/sail down
+./vendor/bin/sail stop      # 止めるだけ（データは残ります）
+./vendor/bin/sail down -v   # 止めて、データベースの中身ごと消す
 ```
 
-## 設計のメモ
+別のアプリを動かしたいときは `sail stop` で止めてください（ポートが空きます）。`down -v` のあとは、3手目（`sail up -d`）からやり直します。
 
-リプライ機能をなぜそう作ったのか。
+---
 
-### 作らないと決めたもの
+## フォルダの歩き方
 
-- リプライへのリプライ（入れ子）。リプライはポストに対してだけ付ける
-- リプライの編集。できるのは投稿と削除だけ
+```
+teamchat-app/
+├── docs/
+│   ├── spec.md          仕様書（変えない。疑問は確認事項へ）
+│   └── design/          設計書一式（あなたが作る）
+├── mockup/
+│   └── index.html       ここから全10画面を見る
+└── （素のLaravel一式）
+```
 
-### 選ばなかった作り方
-
-- 本文の140字は、`content` 列の型では守らない。`posts.content` と同じく入力チェックで守る
-- 「削除」ボタンを画面で隠すだけにはしない。コントローラーでも `authorize` して、URL を直接開かれても 403 にする
-- `PostPolicy` にリプライの判定を足さない。`ReplyPolicy` を別に作り、判定の書き方（`user_id` が本人か）だけ揃えた
-- リプライ先のポストは入力チェックの項目にしない。URL の `{post}` で決め、存在しなければ 404 にする
-
-### 知らずに変えると壊れる決めごと
-
-- 本文の上限は `Post::CONTENT_MAX_LENGTH` を使い、ポストの更新と同じルール・同じメッセージにそろえている。変えるときは、ポスト編集画面の残り字数表示も合わせて確認する
-- 本文は検証の前に CRLF を LF に置き換えている。外すと、ブラウザが送る改行が2文字に数えられ、140字ちょうどでもエラーになる
-- `replies` の `user_id` / `post_id` は外部キーで連動削除にしている。外すと、ポストやユーザーを消したあとにリプライだけが残る
-- 詳細画面のリプライは `created_at` を使って新しい順に並べている。この列を使わない形に変えると並びが崩れる
-- ポスト詳細・リプライの投稿・リプライの削除の3つのルートは、`auth` ミドルウェアのグループの中に置いている。外に出すと未ログインでも開ける
-
-### 設計書のありか
-
-- `docs/reply.md`（Issue #1）。実装した時点の記録で、そのあとは更新していないので、今のコードと食い違うことがある
+まず `mockup/index.html` をブラウザで開いて、どんなアプリを作るのかを目で見てから、`docs/spec.md` を読んでください。
